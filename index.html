@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick-Accsesser</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<style>
+  * { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+  body {
+    background: #0B0C10;
+    min-height: 100vh;
+  }
+
+  .glow-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow-bg-2 {
+    position: fixed;
+    top: 20%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(6,182,212,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .card:hover {
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
+    transform: translateY(-2px);
+  }
+
+  .link-btn {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    width: 100%;
+    text-align: left;
+    color: #fff;
+  }
+
+  .link-btn:hover {
+    background: rgba(99,102,241,0.08);
+    border-color: rgba(99,102,241,0.3);
+    transform: translateX(4px);
+  }
+
+  .link-btn:hover .arrow-icon {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .link-btn:hover .btn-icon {
+    background: rgba(99,102,241,0.15);
+    color: #818CF8;
+  }
+
+  .arrow-icon {
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.2s ease;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    color: #94A3B8;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748B;
+    padding: 0 4px;
+    margin-bottom: 12px;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .tag-bypass {
+    background: rgba(34,197,94,0.1);
+    color: #4ADE80;
+    border: 1px solid rgba(34,197,94,0.15);
+  }
+
+  .tag-social {
+    background: rgba(99,102,241,0.1);
+    color: #818CF8;
+    border: 1px solid rgba(99,102,241,0.15);
+  }
+
+  .tag-tool {
+    background: rgba(6,182,212,0.1);
+    color: #22D3EE;
+    border: 1px solid rgba(6,182,212,0.15);
+  }
+
+  .tag-test {
+    background: rgba(249,115,22,0.1);
+    color: #FB923C;
+    border: 1px solid rgba(249,115,22,0.15);
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.06), transparent);
+    margin: 8px 0;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-in {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  .search-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 12px 16px 12px 44px;
+    color: #fff;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .search-box::placeholder {
+    color: #475569;
+  }
+
+  .search-box:focus {
+    border-color: rgba(99,102,241,0.4);
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #475569;
+    font-size: 14px;
+    display: none;
+  }
+</style>
+</head>
+<body class="flex items-start justify-center px-4 py-12 md:py-20">
+
+  <div class="glow-bg"></div>
+  <div class="glow-bg-2"></div>
+
+  <div class="w-full max-w-xl relative z-10">
+
+    <!-- Header -->
+    <div class="text-center mb-10 animate-in" style="animation-delay: 0.05s;">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] mb-5">
+        <span class="iconify text-indigo-400" data-icon="mdi:lightning-bolt" data-width="14"></span>
+        <span class="text-xs font-medium text-slate-400 tracking-wide">Quick Access</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-medium text-white tracking-tight mb-3">Give Us Freedom!</h1>
+      <p class="text-slate-500 text-sm font-light">We all hate school, just like me. They dont give us enough freedom which is why i decided to make this.
+        
+      </p>
+    </div>
+
+    <!-- Search -->
+    <div class="relative mb-8 animate-in" style="animation-delay: 0.15s;">
+      <span class="iconify absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" data-icon="mdi:magnify" data-width="18"></span>
+      <input type="text" class="search-box" placeholder="Search links..." id="searchInput" oninput="filterLinks()">
+    </div>
+
+    <!-- Main Card -->
+    <div class="card rounded-2xl p-6 md:p-8 animate-in" style="animation-delay: 0.25s;">
+
+      <!-- Search Section -->
+      <div id="linksContainer">
+
+        <!-- Bypass Section -->
+        <div class="section-label" data-section="bypass">
+          <span class="iconify inline-block align-middle mr-1" data-icon="mdi:shield-key-outline" data-width="12"></span>
+          Firewall Bypass
+        </div>
+        <div class="space-y-2 mb-6" data-group="bypass">
+          <a href="https://www.chroblox.space" class="link-btn" data-name="chroblox firewall bypass">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:shield-check" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">Chroblox</div>
+              <div class="text-xs text-slate-600 truncate">chroblox.space</div>
+            </div>
+            <span class="tag tag-bypass">Bypass</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+
+          <a href="https://storage.googleapis.com/canvas-lms/index.html" class="link-btn" data-name="dogeub firewall bypass canvas">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:dog" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">Dogeub</div>
+              <div class="text-xs text-slate-600 truncate">Canvas LMS Disguise</div>
+            </div>
+            <span class="tag tag-bypass">Bypass</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+
+          <a href="https://cdn.jsdelivr.net/gh/lucideproxy/svg@latest/logo.svg#/" class="link-btn" data-name="lucide firewall bypass cdn">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:vector-square" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">Lucide</div>
+              <div class="text-xs text-slate-600 truncate">CDN SVG Disguise</div>
+            </div>
+            <span class="tag tag-bypass">Bypass</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+
+          <a href="https://sites.google.com/view/xeno-pro/apps/fern-proy?authuser=4" class="link-btn" data-name="fern firewall bypass google sites">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:leaf" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">Fern</div>
+              <div class="text-xs text-slate-600 truncate">Google Sites Disguise</div>
+            </div>
+            <span class="tag tag-bypass">Bypass</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Social Section -->
+        <div class="section-label pt-4" data-section="social">
+          <span class="iconify inline-block align-middle mr-1" data-icon="mdi:account-group-outline" data-width="12"></span>
+          Social
+        </div>
+        <div class="space-y-2 mb-6" data-group="social">
+          <a href="https://www.youtube.com" class="link-btn" data-name="youtube">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:youtube" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">YouTube</div>
+              <div class="text-xs text-slate-600 truncate">youtube.com</div>
+            </div>
+            <span class="tag tag-social">Social</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+
+          <a href="https://www.snapchat.com" class="link-btn" data-name="snapchat">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:snapchat" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">Snapchat</div>
+              <div class="text-xs text-slate-600 truncate">snapchat.com</div>
+            </div>
+            <span class="tag tag-social">Social</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Tools Section -->
+        <div class="section-label pt-4" data-section="tools">
+          <span class="iconify inline-block align-middle mr-1" data-icon="mdi:tools" data-width="12"></span>
+          Tools & Other
+        </div>
+        <div class="space-y-2" data-group="tools">
+          <a href="https://www.google.com" class="link-btn" data-name="google search">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:google" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">Google</div>
+              <div class="text-xs text-slate-600 truncate">google.com</div>
+            </div>
+            <span class="tag tag-tool">Tool</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+
+          <a href="https://www.yout-ube.com" class="link-btn" data-name="youtube unblock test">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:test-tube" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">YouTube Unblock Test</div>
+              <div class="text-xs text-slate-600 truncate">yout-ube.com</div>
+            </div>
+            <span class="tag tag-test">Test</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+
+          <a href="https://onecompiler.com/html" class="link-btn" data-name="onecompiler html code editor">
+            <div class="btn-icon">
+              <span class="iconify" data-icon="mdi:code-tags" data-width="18"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white">OneCompiler</div>
+              <div class="text-xs text-slate-600 truncate">HTML Editor</div>
+            </div>
+            <span class="tag tag-tool">Tool</span>
+            <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- No Results -->
+      <div class="no-results" id="noResults">
+        <span class="iconify inline-block mb-2 text-slate-700" data-icon="mdi:magnify-close" data-width="32"></span>
+        <p>No links found</p>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-8 animate-in" style="animation-delay: 0.35s;">
+      <p class="text-slate-700 text-xs">Quick-Accsesser &middot; <span id="linkCount">9</span> links</p>
+    </div>
+
+        <div class="text-center mt-8 animate-in" style="animation-delay: 0.35s;">
+      <p class="text-slate-700 text-xs">Produced By HV, for LMS</p>
+    </div>
+
+  </div>
+
+<script>
+function filterLinks() {
+  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  const groups = document.querySelectorAll('[data-group]');
+  const sections = document.querySelectorAll('[data-section]');
+  const dividers = document.querySelectorAll('.divider');
+  let visibleCount = 0;
+
+  groups.forEach(group => {
+    const links = group.querySelectorAll('.link-btn');
+    let groupVisible = 0;
+
+    links.forEach(link => {
+      const name = link.getAttribute('data-name') || '';
+      const match = !query || name.includes(query);
+      link.style.display = match ? 'flex' : 'none';
+      if (match) { groupVisible++; visibleCount++; }
+    });
+
+    // Hide section label if no links visible in group
+    const sectionKey = group.getAttribute('data-group');
+    const label = document.querySelector(`[data-section="${sectionKey}"]`);
+    if (label) label.style.display = groupVisible > 0 ? '' : 'none';
+  });
+
+  // Handle dividers visibility
+  dividers.forEach(div => {
+    const prev = div.previousElementSibling;
+    const next = div.nextElementSibling;
+    let prevVisible = false, nextVisible = false;
+    if (prev && prev.style.display !== 'none') prevVisible = true;
+    if (next) {
+      if (next.style.display !== 'none') nextVisible = true;
+      // Check if any child links are visible
+      const childLinks = next.querySelectorAll('.link-btn');
+      childLinks.forEach(l => { if (l.style.display !== 'none') nextVisible = true; });
+    }
+    div.style.display = (prevVisible && nextVisible) ? '' : 'none';
+  });
+
+  document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+}
+</script>
+
+</body>
+</html>
