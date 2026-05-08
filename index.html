@@ -92,12 +92,16 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
 .ew-line:nth-child(5){bottom:80px;animation-delay:-1s;opacity:0.2}
 @keyframes wf{0%,100%{transform:translateY(0) scaleX(1)}50%{transform:translateY(-15px) scaleX(1.05)}}
 
-/* Floating code numbers */
 .float-code{position:fixed;z-index:0;pointer-events:none;font-family:monospace;font-size:10px;color:rgba(99,102,241,0.03);animation:fcDrift var(--dur,30s) linear infinite}
 @keyframes fcDrift{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh) rotate(var(--rot,45deg));opacity:0}}
 
+/* Main layout */
+.main-layout{display:flex;gap:24px;width:100%;max-width:1100px;align-items:flex-start;transition:all 0.6s cubic-bezier(0.16,1,0.3,1)}
+.main-layout.panel-open{max-width:100%}
+
 /* Card */
-.card-wrapper{perspective:2000px}
+.card-wrapper{perspective:2000px;flex-shrink:0;width:100%;max-width:520px;transition:all 0.6s cubic-bezier(0.16,1,0.3,1)}
+.main-layout.panel-open .card-wrapper{max-width:460px;min-width:380px}
 .main-card{position:relative;background:rgba(255,255,255,0.005);border:1px solid rgba(255,255,255,0.02);border-radius:36px;backdrop-filter:blur(40px);overflow:hidden;transform-style:preserve-3d;will-change:transform}
 .main-card::before{content:'';position:absolute;inset:-2px;border-radius:38px;padding:2px;background:conic-gradient(from var(--ba,0deg),transparent 0%,rgba(99,102,241,0.3) 6%,rgba(6,182,212,0.2) 12%,rgba(168,85,247,0.15) 18%,rgba(34,197,94,0.1) 22%,transparent 28%,transparent 60%,rgba(236,72,153,0.1) 65%,rgba(99,102,241,0.25) 78%,rgba(6,182,212,0.15) 88%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;z-index:1;animation:rb 12s linear infinite;opacity:0.35;transition:opacity 0.6s ease}
 .main-card:hover::before{opacity:1}
@@ -124,7 +128,6 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
 .scanlines::after{content:'';position:absolute;left:0;right:0;height:120px;background:linear-gradient(to bottom,rgba(99,102,241,0.01),transparent);animation:sm 10s linear infinite}
 @keyframes sm{0%{top:-120px}100%{top:calc(100% + 120px)}}
 
-/* Corner accents */
 .corner-accent{position:absolute;width:20px;height:20px;pointer-events:none;z-index:5;opacity:0;transition:opacity 0.5s ease}
 .main-card:hover .corner-accent{opacity:1}
 .ca-tl{top:12px;left:12px;border-top:1px solid rgba(99,102,241,0.2);border-left:1px solid rgba(99,102,241,0.2);border-radius:4px 0 0 0}
@@ -144,6 +147,8 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
 .link-btn:hover .link-title{color:#fff}
 .link-btn:hover .link-sub{color:#475569}
 .link-btn:active{transform:translateY(0) scale(0.98);transition-duration:0.08s}
+.link-btn.active-link{border-color:rgba(99,102,241,0.15);background:rgba(99,102,241,0.03);box-shadow:0 0 30px -10px rgba(99,102,241,0.1),inset 0 0 20px rgba(99,102,241,0.01)}
+.link-btn.active-link .btn-icon{background:rgba(99,102,241,0.08);color:#818CF8;border-color:rgba(99,102,241,0.1)}
 
 .ripple{position:absolute;border-radius:50%;transform:scale(0);animation:ro 0.8s ease-out forwards;pointer-events:none;z-index:5}
 .rp1{background:rgba(99,102,241,0.08)}
@@ -192,6 +197,45 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
 .shortcut-hint{position:absolute;right:19px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:600;color:#080c18;z-index:2;padding:3px 11px;border-radius:7px;border:1px solid rgba(255,255,255,0.02);background:rgba(255,255,255,0.008);transition:all 0.3s ease;pointer-events:none;letter-spacing:0.05em}
 .search-wrapper:focus-within .shortcut-hint{opacity:0;transform:translateY(-50%) scale(0.8)}
 
+/* Embedded Browser Panel */
+.embed-panel{position:fixed;top:0;right:0;width:0;height:100vh;z-index:100;background:rgba(4,4,8,0.97);backdrop-filter:blur(40px);border-left:1px solid rgba(255,255,255,0.02);transition:all 0.55s cubic-bezier(0.16,1,0.3,1);overflow:hidden;display:flex;flex-direction:column;opacity:0}
+.embed-panel.open{width:65vw;min-width:420px;max-width:900px;opacity:1}
+.embed-panel.open .embed-toolbar{opacity:1;transform:translateY(0)}
+.embed-panel.open .embed-frame-wrap{opacity:1;transform:scale(1)}
+
+.embed-toolbar{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.02);background:rgba(255,255,255,0.005);flex-shrink:0;opacity:0;transform:translateY(-10px);transition:all 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s}
+
+.embed-close{width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.008);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;color:#475569;flex-shrink:0}
+.embed-close:hover{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.15);color:#F87171;box-shadow:0 0 20px -5px rgba(239,68,68,0.1)}
+
+.embed-url-bar{flex:1;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.006);border:1px solid rgba(255,255,255,0.02);border-radius:12px;padding:8px 14px;min-width:0}
+.embed-url-icon{color:#0f1520;flex-shrink:0;transition:color 0.3s ease}
+.embed-url-text{font-size:11px;font-weight:500;color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.02em;font-family:'Inter',monospace}
+
+.embed-open-external{width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.008);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;color:#0f1520;flex-shrink:0}
+.embed-open-external:hover{background:rgba(99,102,241,0.06);border-color:rgba(99,102,241,0.1);color:#818CF8}
+
+.embed-loading{display:none;align-items:center;justify-content:center;padding:40px;gap:10px;flex:1}
+.embed-loading.visible{display:flex}
+.loading-spinner{width:20px;height:20px;border:2px solid rgba(99,102,241,0.1);border-top-color:rgba(99,102,241,0.6);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:12px;color:#334155;font-weight:500;letter-spacing:0.05em}
+
+.embed-frame-wrap{flex:1;position:relative;opacity:0;transform:scale(0.98);transition:all 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s;overflow:hidden}
+.embed-frame-wrap iframe{width:100%;height:100%;border:none;background:#0a0a0f;border-radius:0}
+
+.embed-error{display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:60px 30px;flex:1;text-align:center}
+.embed-error.visible{display:flex}
+.embed-error-icon{width:56px;height:56px;border-radius:16px;background:rgba(249,115,22,0.04);border:1px solid rgba(249,115,22,0.06);display:flex;align-items:center;justify-content:center;color:#FB923C}
+.embed-error-title{font-size:14px;font-weight:600;color:#475569}
+.embed-error-sub{font-size:12px;color:#1e293b;font-weight:400;max-width:300px;line-height:1.6}
+.embed-error-btn{margin-top:6px;padding:8px 20px;border-radius:10px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1);color:#818CF8;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.3s ease;letter-spacing:0.02em}
+.embed-error-btn:hover{background:rgba(99,102,241,0.1);box-shadow:0 0 20px -5px rgba(99,102,241,0.1)}
+
+/* Panel overlay backdrop */
+.panel-backdrop{position:fixed;inset:0;z-index:99;background:rgba(2,2,4,0.4);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity 0.4s ease}
+.panel-backdrop.visible{opacity:1;pointer-events:auto}
+
 /* Animations */
 @keyframes fiu{from{opacity:0;transform:translateY(35px);filter:blur(10px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
 @keyframes shimmer{0%{background-position:-300% center}100%{background-position:300% center}}
@@ -227,6 +271,12 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
 
 .audio-bars{display:flex;align-items:flex-end;gap:2px;height:14px}
 .audio-bar{width:2px;border-radius:1px;background:rgba(99,102,241,0.12);animation:audioBar var(--dur,1s) ease-in-out infinite alternate}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .embed-panel.open{width:100vw;min-width:unset;max-width:unset}
+  .main-layout.panel-open .card-wrapper{max-width:100%;min-width:unset}
+}
 </style>
 </head>
 <body class="flex items-start justify-center px-4 py-14 md:py-24">
@@ -252,7 +302,41 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
 <div id="trailContainer"></div>
 <div id="floatCodeContainer"></div>
 
-<div class="w-full max-w-xl relative z-10">
+<!-- Backdrop -->
+<div class="panel-backdrop" id="panelBackdrop"></div>
+
+<!-- Embedded Browser Panel -->
+<div class="embed-panel" id="embedPanel">
+  <div class="embed-toolbar">
+    <div class="embed-close" id="embedClose" title="Close panel">
+      <span class="iconify" data-icon="mdi:close" data-width="16"></span>
+    </div>
+    <div class="embed-url-bar">
+      <span class="iconify embed-url-icon" data-icon="mdi:lock-outline" data-width="12"></span>
+      <span class="embed-url-text" id="embedUrlText">—</span>
+    </div>
+    <div class="embed-open-external" id="embedOpenExternal" title="Open in new tab">
+      <span class="iconify" data-icon="mdi:open-in-new" data-width="14"></span>
+    </div>
+  </div>
+  <div class="embed-loading" id="embedLoading">
+    <div class="loading-spinner"></div>
+    <span class="loading-text">Loading page...</span>
+  </div>
+  <div class="embed-frame-wrap" id="embedFrameWrap">
+    <iframe id="embedFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer"></iframe>
+  </div>
+  <div class="embed-error" id="embedError">
+    <div class="embed-error-icon">
+      <span class="iconify" data-icon="mdi:shield-lock-outline" data-width="24"></span>
+    </div>
+    <div class="embed-error-title">This site can't be embedded</div>
+    <div class="embed-error-sub">The website blocks embedding (X-Frame-Options). Click below to open it in a new tab instead.</div>
+    <button class="embed-error-btn" id="embedErrorBtn">Open in New Tab</button>
+  </div>
+</div>
+
+<div class="w-full max-w-xl relative z-10" id="mainContent">
 
   <div class="text-center mb-10 animate-in" style="animation-delay:0.05s">
     <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-7" style="background:rgba(255,255,255,0.006);border:1px solid rgba(255,255,255,0.015);animation:bg 5s ease-in-out infinite">
@@ -298,25 +382,25 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
             Firewall Bypass
           </div>
           <div class="space-y-2 mb-6" data-group="bypass">
-            <a href="https://www.chroblox.space" class="link-btn" data-name="chroblox firewall bypass">
+            <a href="https://www.chroblox.space" class="link-btn" data-name="chroblox firewall bypass" data-url="https://www.chroblox.space">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:shield-check" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">Chroblox</div><div class="link-sub truncate mt-0.5">chroblox.space</div></div>
               <span class="tag tag-bypass"><span class="tag-dot"></span>Bypass</span>
               <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
             </a>
-            <a href="https://storage.googleapis.com/canvas-lms/index.html" class="link-btn" data-name="dogeub firewall bypass canvas">
+            <a href="https://storage.googleapis.com/canvas-lms/index.html" class="link-btn" data-name="dogeub firewall bypass canvas" data-url="https://storage.googleapis.com/canvas-lms/index.html">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:dog" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">Dogeub</div><div class="link-sub truncate mt-0.5">Canvas LMS Disguise</div></div>
               <span class="tag tag-bypass"><span class="tag-dot"></span>Bypass</span>
               <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
             </a>
-            <a href="https://cdn.jsdelivr.net/gh/lucideproxy/svg@latest/logo.svg#/" class="link-btn" data-name="lucide firewall bypass cdn">
+            <a href="https://cdn.jsdelivr.net/gh/lucideproxy/svg@latest/logo.svg#/" class="link-btn" data-name="lucide firewall bypass cdn" data-url="https://cdn.jsdelivr.net/gh/lucideproxy/svg@latest/logo.svg#/">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:vector-square" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">Lucide</div><div class="link-sub truncate mt-0.5">CDN SVG Disguise</div></div>
               <span class="tag tag-bypass"><span class="tag-dot"></span>Bypass</span>
               <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
             </a>
-            <a href="https://sites.google.com/view/xeno-pro/apps/fern-proy?authuser=4" class="link-btn" data-name="fern firewall bypass google sites">
+            <a href="https://sites.google.com/view/xeno-pro/apps/fern-proy?authuser=4" class="link-btn" data-name="fern firewall bypass google sites" data-url="https://sites.google.com/view/xeno-pro/apps/fern-proy?authuser=4">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:leaf" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">Fern</div><div class="link-sub truncate mt-0.5">Google Sites Disguise</div></div>
               <span class="tag tag-bypass"><span class="tag-dot"></span>Bypass</span>
@@ -329,13 +413,13 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
             Social
           </div>
           <div class="space-y-2 mb-6" data-group="social">
-            <a href="https://www.youtube.com" class="link-btn" data-name="youtube">
+            <a href="https://www.youtube.com" class="link-btn" data-name="youtube" data-url="https://www.youtube.com">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:youtube" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">YouTube</div><div class="link-sub truncate mt-0.5">youtube.com</div></div>
               <span class="tag tag-social"><span class="tag-dot"></span>Social</span>
               <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
             </a>
-            <a href="https://www.snapchat.com" class="link-btn" data-name="snapchat">
+            <a href="https://www.snapchat.com" class="link-btn" data-name="snapchat" data-url="https://www.snapchat.com">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:snapchat" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">Snapchat</div><div class="link-sub truncate mt-0.5">snapchat.com</div></div>
               <span class="tag tag-social"><span class="tag-dot"></span>Social</span>
@@ -348,19 +432,19 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
             Tools & Other
           </div>
           <div class="space-y-2" data-group="tools">
-            <a href="https://www.google.com" class="link-btn" data-name="google search">
+            <a href="https://www.google.com" class="link-btn" data-name="google search" data-url="https://www.google.com">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:google" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">Google</div><div class="link-sub truncate mt-0.5">google.com</div></div>
               <span class="tag tag-tool"><span class="tag-dot"></span>Tool</span>
               <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
             </a>
-            <a href="https://www.yout-ube.com" class="link-btn" data-name="youtube unblock test">
+            <a href="https://www.yout-ube.com" class="link-btn" data-name="youtube unblock test" data-url="https://www.yout-ube.com">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:test-tube" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">YouTube Unblock Test</div><div class="link-sub truncate mt-0.5">yout-ube.com</div></div>
               <span class="tag tag-test"><span class="tag-dot"></span>Test</span>
               <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
             </a>
-            <a href="https://onecompiler.com/html" class="link-btn" data-name="onecompiler html code editor">
+            <a href="https://onecompiler.com/html" class="link-btn" data-name="onecompiler html code editor" data-url="https://onecompiler.com/html">
               <div class="btn-icon"><span class="iconify" data-icon="mdi:code-tags" data-width="18"></span></div>
               <div class="flex-1 min-w-0"><div class="link-title">OneCompiler</div><div class="link-sub truncate mt-0.5">HTML Editor</div></div>
               <span class="tag tag-tool"><span class="tag-dot"></span>Tool</span>
@@ -368,6 +452,34 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
             </a>
           </div>
         </div>
+        
+        <div class="divider"></div>
+<div class="section-label pt-5" data-section="games">
+  <span class="iconify li" data-icon="mdi:gamepad-variant-outline" data-width="13"></span>
+  Games
+</div>
+<div class="space-y-2" data-group="games">
+  <a href="https://repoonlinegame.com/bendy-and-the-ink-machine/" class="link-btn" data-name="batim" data-url="https://repoonlinegame.com/bendy-and-the-ink-machine/">
+    <div class="btn-icon"><span class="iconify" data-icon="mdi:controller" data-width="18"></span></div>
+    <div class="flex-1 min-w-0"><div class="link-title">Bendy And The Ink Machine</div><div class="link-sub truncate mt-0.5">https://repoonlinegame.com/bendy-and-the-ink-machine/</div></div>
+    <span class="tag tag-bypass"><span class="tag-dot"></span>Games</span>
+    <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+  </a>
+  
+    <a href="https://repoonlinegame.com/" class="link-btn" data-name="repo" data-url="https://repoonlinegame.com/">
+    <div class="btn-icon"><span class="iconify" data-icon="mdi:controller" data-width="18"></span></div>
+    <div class="flex-1 min-w-0"><div class="link-title">R.E.P.O</div><div class="link-sub truncate mt-0.5">https://repoonlinegame.com/</div></div>
+    <span class="tag tag-bypass"><span class="tag-dot"></span>Games</span>
+    <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+  </a>
+  
+      <a href="https://repoonlinegame.com/ultrakill/" class="link-btn" data-name="ultrakill" data-url="https://repoonlinegame.com/ultrakill/">
+    <div class="btn-icon"><span class="iconify" data-icon="mdi:controller" data-width="18"></span></div>
+    <div class="flex-1 min-w-0"><div class="link-title">Ultra  Kill</div><div class="link-sub truncate mt-0.5">https://repoonlinegame.com/ultrakill/</div></div>
+    <span class="tag tag-bypass"><span class="tag-dot"></span>Games</span>
+    <span class="iconify arrow-icon text-slate-500" data-icon="mdi:arrow-right" data-width="16"></span>
+  </a>
+</div>
 
         <div class="no-results" id="noResults">
           <span class="iconify inline-block mb-3" data-icon="mdi:magnify-close" data-width="36" style="color:#060a12"></span>
@@ -398,10 +510,148 @@ body{background:#020204;min-height:100vh;overflow-x:hidden;color:#fff}
   <div class="text-center mt-3 mb-8 animate-in" style="animation-delay:0.7s">
     <p class="footer-text">Dude tyrie, if you dont believe me this is proof i made this.</p>
   </div>
+  
+    <div class="text-center mt-3 mb-8 animate-in" style="animation-delay:0.7s">
+    <p class="footer-text">Whats New: Remade Website, Added Games, Made Links Open Inside This.</p>
+  </div>
 
 </div>
 
 <script>
+/* ── Embedded Browser Panel ── */
+var embedPanel = document.getElementById('embedPanel');
+var embedFrame = document.getElementById('embedFrame');
+var embedUrlText = document.getElementById('embedUrlText');
+var embedLoading = document.getElementById('embedLoading');
+var embedFrameWrap = document.getElementById('embedFrameWrap');
+var embedError = document.getElementById('embedError');
+var embedErrorBtn = document.getElementById('embedErrorBtn');
+var embedClose = document.getElementById('embedClose');
+var embedOpenExternal = document.getElementById('embedOpenExternal');
+var panelBackdrop = document.getElementById('panelBackdrop');
+var mainContent = document.getElementById('mainContent');
+var currentEmbedUrl = '';
+var activeLinkBtn = null;
+var loadTimeout = null;
+
+function openEmbed(url, btnEl) {
+  /* Remove active state from previous */
+  if (activeLinkBtn) activeLinkBtn.classList.remove('active-link');
+  activeLinkBtn = btnEl;
+  if (btnEl) btnEl.classList.add('active-link');
+
+  currentEmbedUrl = url;
+
+  /* Extract display URL */
+  try {
+    var u = new URL(url);
+    embedUrlText.textContent = u.hostname + (u.pathname !== '/' ? u.pathname : '');
+  } catch(e) {
+    embedUrlText.textContent = url;
+  }
+
+  /* Show loading, hide others */
+  embedLoading.classList.add('visible');
+  embedFrameWrap.style.opacity = '0';
+  embedFrameWrap.style.transform = 'scale(0.98)';
+  embedError.classList.remove('visible');
+
+  /* Load iframe */
+  embedFrame.src = '';
+  setTimeout(function() {
+    embedFrame.src = url;
+  }, 50);
+
+  /* Timeout fallback — if loading takes too long, might be blocked */
+  if (loadTimeout) clearTimeout(loadTimeout);
+  loadTimeout = setTimeout(function() {
+    if (embedLoading.classList.contains('visible')) {
+      /* Check if iframe actually loaded something */
+      showEmbedError();
+    }
+  }, 8000);
+
+  /* Open panel */
+  embedPanel.classList.add('open');
+  panelBackdrop.classList.add('visible');
+  mainContent.style.maxWidth = '520px';
+  mainContent.style.marginRight = '0';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEmbed() {
+  embedPanel.classList.remove('open');
+  panelBackdrop.classList.remove('visible');
+  mainContent.style.maxWidth = '';
+  mainContent.style.marginRight = '';
+  document.body.style.overflow = '';
+
+  if (loadTimeout) clearTimeout(loadTimeout);
+
+  if (activeLinkBtn) {
+    activeLinkBtn.classList.remove('active-link');
+    activeLinkBtn = null;
+  }
+
+  /* Unload iframe after animation */
+  setTimeout(function() {
+    embedFrame.src = 'about:blank';
+    embedLoading.classList.remove('visible');
+    embedError.classList.remove('visible');
+    currentEmbedUrl = '';
+  }, 550);
+}
+
+function showEmbedError() {
+  embedLoading.classList.remove('visible');
+  embedFrameWrap.style.opacity = '0';
+  embedFrameWrap.style.transform = 'scale(0.98)';
+  embedError.classList.add('visible');
+  embedFrame.src = 'about:blank';
+}
+
+/* iframe load events */
+embedFrame.addEventListener('load', function() {
+  if (loadTimeout) clearTimeout(loadTimeout);
+  /* Only hide loading if we have a real URL loaded */
+  if (currentEmbedUrl && embedFrame.src !== 'about:blank') {
+    embedLoading.classList.remove('visible');
+    embedFrameWrap.style.opacity = '1';
+    embedFrameWrap.style.transform = 'scale(1)';
+  }
+});
+
+embedFrame.addEventListener('error', function() {
+  if (loadTimeout) clearTimeout(loadTimeout);
+  showEmbedError();
+});
+
+/* Close button */
+embedClose.addEventListener('click', closeEmbed);
+panelBackdrop.addEventListener('click', closeEmbed);
+
+/* Open external button */
+embedOpenExternal.addEventListener('click', function() {
+  if (currentEmbedUrl) window.open(currentEmbedUrl, '_blank');
+});
+
+/* Error fallback button */
+embedErrorBtn.addEventListener('click', function() {
+  if (currentEmbedUrl) window.open(currentEmbedUrl, '_blank');
+});
+
+/* Escape key closes panel */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && embedPanel.classList.contains('open')) {
+    closeEmbed();
+    return;
+  }
+  if (e.key === '/' && document.activeElement !== document.getElementById('searchInput') && !embedPanel.classList.contains('open')) {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+});
+
 /* ── Stars ── */
 function makeStars(id, count, sRange, oRange, speed) {
   var c = document.getElementById(id);
@@ -459,7 +709,7 @@ makeStars('stars2', 300, [0.4, 1.1], [0.15, 0.55], 1.5);
 makeStars('stars3', 150, [0.6, 1.5], [0.25, 0.7], 2);
 makeStars('stars4', 60, [1, 2.2], [0.35, 0.9], 2.5);
 
-/* ── Grid with nodes ── */
+/* ── Grid ── */
 var gridC = document.getElementById('gridCanvas');
 var gridCtx = gridC.getContext('2d');
 function resizeGrid() { gridC.width = innerWidth; gridC.height = innerHeight; }
@@ -685,7 +935,7 @@ function filterLinks() {
   document.getElementById('noResults').style.display = vc === 0 ? 'block' : 'none';
 }
 
-/* ── Button Effects ── */
+/* ── Button Effects + Open Embed ── */
 var allBtns = document.querySelectorAll('.link-btn');
 for (var bi = 0; bi < allBtns.length; bi++) {
   (function(b) {
@@ -695,6 +945,9 @@ for (var bi = 0; bi < allBtns.length; bi++) {
       b.style.setProperty('--my', (e.clientY - r.top) + 'px');
     });
     b.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      /* Ripple */
       var r = b.getBoundingClientRect();
       for (var ri = 0; ri < 2; ri++) {
         (function(delay, cls) {
@@ -712,6 +965,10 @@ for (var bi = 0; bi < allBtns.length; bi++) {
           }, delay);
         })(ri * 80, ri === 0 ? 'rp1' : 'rp2');
       }
+
+      /* Open embed panel */
+      var url = b.getAttribute('data-url');
+      if (url) openEmbed(url, b);
     });
   })(allBtns[bi]);
 }
@@ -786,19 +1043,6 @@ title.addEventListener('mouseenter', doGlitch);
 setInterval(function() {
   if (Math.random() > 0.65) doGlitch();
 }, 7000);
-
-/* ── Keyboard ── */
-document.addEventListener('keydown', function(e) {
-  if (e.key === '/' && document.activeElement !== document.getElementById('searchInput')) {
-    e.preventDefault();
-    document.getElementById('searchInput').focus();
-  }
-  if (e.key === 'Escape') {
-    document.getElementById('searchInput').blur();
-    document.getElementById('searchInput').value = '';
-    filterLinks();
-  }
-});
 
 /* ── Clock ── */
 function updateClock() {
